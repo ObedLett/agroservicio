@@ -1,0 +1,74 @@
+@if (carrito.abierto()) {
+  <div class="velo" (click)="cerrar()"></div>
+}
+
+<aside class="cajon" [class.abierto]="carrito.abierto()" [attr.inert]="carrito.abierto() ? null : ''"
+       aria-label="Carrito de cotización">
+  <div class="cajon-cab">
+    <h2>Su cotización</h2>
+    <button class="cerrar" type="button" aria-label="Cerrar carrito" (click)="cerrar()">×</button>
+  </div>
+
+  <div class="cajon-cuerpo">
+    @if (codigo(); as c) {
+      <div class="exito">
+        <h3>Cotización enviada</h3>
+        <p style="margin:0">Anote su código de referencia. Un asesor le contactará para confirmar precios y disponibilidad.</p>
+        <div class="codigo">{{ c }}</div>
+        <a class="btn sec" style="text-align:center;text-decoration:none" [href]="enlaceWhatsapp()" target="_blank" rel="noopener">Escribirnos por WhatsApp</a>
+        <button class="btn" type="button" (click)="seguir()">Seguir viendo productos</button>
+      </div>
+    } @else if (!carrito.lineas().length) {
+      <div class="vacio">Su carrito está vacío. Abra un producto y elija una presentación para agregarlo.</div>
+    } @else {
+      @for (l of carrito.lineas(); track clave(l)) {
+        <div class="linea">
+          <div>
+            <div class="ln">{{ l.producto.nombre }}</div>
+            <div class="lp">{{ l.presentacion.etiqueta }} · {{ l.presentacion.precio | dinero }} c/u</div>
+          </div>
+          <div class="lt">{{ l.presentacion.precio * l.cantidad | dinero }}</div>
+          <div class="acciones">
+            <div class="cant">
+              <button type="button" [attr.aria-label]="'Disminuir ' + l.producto.nombre" (click)="carrito.cambiar(l, -1)">−</button>
+              <input type="text" [value]="l.cantidad" readonly aria-label="Cantidad">
+              <button type="button" [attr.aria-label]="'Aumentar ' + l.producto.nombre"
+                      [disabled]="l.cantidad >= l.presentacion.stock" (click)="carrito.cambiar(l, 1)">+</button>
+            </div>
+            <button class="quitar" type="button" (click)="carrito.quitar(l)">Quitar</button>
+          </div>
+        </div>
+      }
+
+      <div class="total"><span>Total estimado</span><span>{{ carrito.total() | dinero }}</span></div>
+      <p class="nota">Es una solicitud de cotización, no una compra. Confirmaremos precios, existencias y forma de entrega.</p>
+
+      <form class="form" ngNoForm novalidate (submit)="enviar($event)">
+        <div class="campo">
+          <label for="c-nombre">Nombre completo</label>
+          <input id="c-nombre" autocomplete="name" [(ngModel)]="datos.nombre">
+        </div>
+        <div class="campo">
+          <label for="c-tel">Teléfono o WhatsApp</label>
+          <input id="c-tel" type="tel" inputmode="tel" autocomplete="tel" [(ngModel)]="datos.telefono">
+        </div>
+        <div class="campo">
+          <label for="c-email">Correo (opcional)</label>
+          <input id="c-email" type="email" autocomplete="email" [(ngModel)]="datos.email">
+        </div>
+        <div class="campo">
+          <label for="c-lugar">Municipio o comunidad de entrega</label>
+          <input id="c-lugar" autocomplete="address-level2" [(ngModel)]="datos.municipio">
+        </div>
+        <div class="campo">
+          <label for="c-notas">Notas (cultivo, área, fecha que lo necesita)</label>
+          <textarea id="c-notas" [(ngModel)]="datos.notas"></textarea>
+        </div>
+        @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+        <button class="btn ancho" type="submit" [disabled]="enviando()">
+          {{ enviando() ? 'Enviando…' : 'Solicitar cotización' }}
+        </button>
+      </form>
+    }
+  </div>
+</aside>

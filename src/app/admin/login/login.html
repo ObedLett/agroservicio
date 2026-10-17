@@ -1,0 +1,16 @@
+<div class="acceso">
+  <form ngNoForm novalidate (submit)="entrar($event)">
+    <h1>{{ negocio.nombre }}</h1>
+    <p class="sub">Ingrese con su cuenta de empleado.</p>
+    <div class="campo">
+      <label for="l-email">Correo</label>
+      <input id="l-email" type="email" autocomplete="username" [(ngModel)]="email">
+    </div>
+    <div class="campo">
+      <label for="l-pass">Contraseña</label>
+      <input id="l-pass" type="password" autocomplete="current-password" [(ngModel)]="clave">
+    </div>
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+    <button class="btn" type="submit" [disabled]="cargando()">{{ cargando() ? 'Ingresando…' : 'Ingresar' }}</button>
+  </form>
+</div>

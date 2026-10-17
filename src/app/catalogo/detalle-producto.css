@@ -1,0 +1,19 @@
+.dlg-cab{display:flex;justify-content:space-between;align-items:start;gap:1rem;padding:1.25rem 1.25rem .5rem}
+.dlg-cab h2{font:800 1.6rem/1.1 var(--titulo);margin:0;letter-spacing:-.02em}
+.dlg-cab p{margin:.25rem 0 0;color:var(--tinta-2)}
+.dlg-cuerpo{padding:0 1.25rem 1.25rem;display:grid;gap:1rem}
+.ficha{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;margin:0}
+.ficha dt{color:var(--tinta-2)}
+.ficha dd{margin:0;font-weight:500}
+.pres{display:grid;gap:.5rem;border:0;padding:0;margin:0}
+.pres legend{font:600 1rem var(--titulo);margin-bottom:.4rem;padding:0}
+.pres label{display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;border:1px solid var(--borde);border-radius:var(--radio);padding:.7rem .8rem;cursor:pointer}
+.pres label:has(input:checked){border-color:var(--verde);background:#EAF2E6;box-shadow:inset 0 0 0 1px var(--verde)}
+.pres label.off{opacity:.55;cursor:not-allowed}
+.pres input{accent-color:var(--verde)}
+.pres .pn small{display:block;color:var(--tinta-2)}
+.pres .pp{font-weight:600}
+.pie-dlg{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;border-top:1px solid var(--borde);padding-top:1rem}
+.subtotal{font:800 1.4rem var(--titulo)}
+dialog{width:min(38rem,calc(100vw - 1.5rem));max-height:calc(100vh - 2rem)}
+.desc{margin:0}

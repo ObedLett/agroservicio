@@ -1,0 +1,12 @@
+.cab{background:var(--verde-osc);color:#fff;display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;justify-content:space-between;padding:.7rem clamp(1rem,3vw,2rem)}
+.cab h1{font:800 1.2rem var(--titulo);margin:0}
+.cab .quien{display:flex;gap:.75rem;align-items:center;font-size:.9rem;color:#CFE0CB}
+.cab .btn.sec{color:#fff;border-color:#8FB59A}
+.cab .btn.sec:hover{background:#2B5C3A}
+.tabs{display:flex;gap:.25rem;background:#fff;border-bottom:1px solid var(--borde);padding:0 clamp(1rem,3vw,2rem)}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:.85rem 1rem;font-weight:600;display:flex;gap:.5rem;align-items:center}
+.tab[aria-selected="true"]{border-bottom-color:var(--verde);color:var(--verde-osc)}
+.insignia{background:var(--alerta);color:#fff;border-radius:99px;font-size:.75rem;min-width:1.4rem;height:1.4rem;display:inline-grid;place-items:center;padding:0 .4rem}
+.insignia.verde{background:var(--verde)}
+main{padding:1.25rem clamp(1rem,3vw,2rem) 4rem;max-width:84rem;margin:0 auto}
+:host{display:block;min-height:100vh;--papel:#EEF1E7;background:var(--papel);font-size:.97rem}

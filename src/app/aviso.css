@@ -1,0 +1,3 @@
+.aviso{position:fixed;left:50%;bottom:1.25rem;transform:translateX(-50%);background:var(--tinta);color:#fff;padding:.7rem 1.1rem;border-radius:var(--radio);z-index:50;max-width:calc(100vw - 2rem)}
+.aviso.nuevo{background:var(--verde-osc);border:2px solid var(--maiz)}
+.aviso.mal{background:var(--alerta)}

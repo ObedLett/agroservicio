@@ -1,0 +1,5 @@
+.acceso{min-height:100vh;display:grid;place-items:center;padding:1rem;background:var(--verde-osc)}
+.acceso form{background:#fff;border-radius:var(--radio);padding:2rem;width:min(24rem,100%);display:grid;gap:1rem}
+.acceso h1{font:800 1.7rem/1.1 var(--titulo);margin:0;letter-spacing:-.02em}
+.acceso p.sub{margin:0;color:var(--tinta-2)}
+:host{display:block}

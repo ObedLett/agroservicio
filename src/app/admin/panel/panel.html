@@ -1,0 +1,23 @@
+<header class="cab">
+  <h1>{{ negocio.nombre }} · Panel</h1>
+  <div class="quien">
+    <span>{{ usuario()?.email }}</span>
+    <button class="btn sec chico" type="button" (click)="salir()">Cerrar sesión</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Secciones">
+  <button class="tab" role="tab" type="button" [attr.aria-selected]="tab() === 'inv'" (click)="tab.set('inv')">
+    Inventario
+    @if (alertas() > 0) { <span class="insignia">{{ alertas() }}</span> }
+  </button>
+  <button class="tab" role="tab" type="button" [attr.aria-selected]="tab() === 'ped'" (click)="tab.set('ped')">
+    Pedidos
+    @if (nuevos() > 0) { <span class="insignia">{{ nuevos() }}</span> }
+  </button>
+</nav>
+
+<main>
+  <section role="tabpanel" [hidden]="tab() !== 'inv'"><app-inventario [productos]="productos()" /></section>
+  <section role="tabpanel" [hidden]="tab() !== 'ped'"><app-pedidos [pedidos]="pedidos()" /></section>
+</main>

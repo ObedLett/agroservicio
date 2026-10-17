@@ -1,0 +1,85 @@
+<dialog #dlg class="editor" aria-labelledby="dlg-titulo">
+  <form class="dlg-form" ngNoForm novalidate (submit)="guardar($event)">
+    <div class="dlg-cab">
+      <h2 id="dlg-titulo">{{ esNuevo ? 'Nuevo producto' : 'Editar producto' }}</h2>
+      <button class="cerrar" type="button" aria-label="Cerrar" (click)="cerrar()">×</button>
+    </div>
+
+    <div class="dlg-cuerpo">
+      @let m = modelo();
+      <div class="campo">
+        <label for="e-nombre">Nombre</label>
+        <input id="e-nombre" [(ngModel)]="m.nombre">
+      </div>
+      <div class="fila2">
+        <div class="campo">
+          <label for="e-cat">Categoría</label>
+          <select id="e-cat" [(ngModel)]="m.categoria">
+            @for (c of categorias; track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+          </select>
+        </div>
+        <div class="campo">
+          <label for="e-marca">Marca</label>
+          <input id="e-marca" [(ngModel)]="m.marca">
+        </div>
+      </div>
+      <div class="campo">
+        <label for="e-ing">Ingrediente activo (déjelo vacío en herramientas)</label>
+        <input id="e-ing" list="lista-ing" [(ngModel)]="m.ingredienteActivo">
+        <datalist id="lista-ing">
+          @for (i of sugerencias(); track i) { <option [value]="i"></option> }
+        </datalist>
+      </div>
+      <div class="campo">
+        <label for="e-desc">Descripción</label>
+        <textarea id="e-desc" [(ngModel)]="m.descripcion"></textarea>
+      </div>
+      <div class="campo">
+        <label for="e-img">URL de imagen (opcional)</label>
+        <input id="e-img" type="url" placeholder="https://…" [(ngModel)]="m.imagenUrl">
+      </div>
+      <label class="activo">
+        <input id="e-activo" type="checkbox" [(ngModel)]="m.activo"> Visible en el catálogo
+      </label>
+
+      <div>
+        <strong>Presentaciones</strong>
+        <div class="pres-lista">
+          @for (f of m.pres; track f.id) {
+            <div class="pres-fila">
+              <div class="campo">
+                <label [for]="'pf-et-' + f.id">Presentación</label>
+                <input [id]="'pf-et-' + f.id" placeholder="Ej. Saco 46 kg" [(ngModel)]="f.etiqueta">
+              </div>
+              <div class="campo">
+                <label [for]="'pf-sk-' + f.id">SKU</label>
+                <input [id]="'pf-sk-' + f.id" [(ngModel)]="f.sku">
+              </div>
+              <div class="campo">
+                <label [for]="'pf-pr-' + f.id">Precio</label>
+                <input [id]="'pf-pr-' + f.id" type="number" min="0" step="0.01" [(ngModel)]="f.precio">
+              </div>
+              <div class="campo">
+                <label [for]="'pf-st-' + f.id">Existencia</label>
+                <input [id]="'pf-st-' + f.id" type="number" min="0" step="1" [(ngModel)]="f.stock">
+              </div>
+              <div class="campo">
+                <label [for]="'pf-mi-' + f.id">Mínimo</label>
+                <input [id]="'pf-mi-' + f.id" type="number" min="0" step="1" [(ngModel)]="f.stockMinimo">
+              </div>
+              <button class="btn peligro chico" type="button" aria-label="Quitar presentación" (click)="quitarFila(f)">Quitar</button>
+            </div>
+          }
+        </div>
+        <button class="btn sec chico agregar-pres" type="button" (click)="agregarFila()">Agregar presentación</button>
+      </div>
+
+      @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+    </div>
+
+    <div class="dlg-pie">
+      <button class="btn sec" type="button" (click)="cerrar()">Cancelar</button>
+      <button class="btn" type="submit" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar producto' }}</button>
+    </div>
+  </form>
+</dialog>

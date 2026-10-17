@@ -1,0 +1,49 @@
+<dialog #dlg class="detalle" aria-labelledby="det-titulo" (close)="cerrado.emit()" (click)="clicFuera($event)">
+  @if (producto(); as p) {
+    <div class="dlg-cab">
+      <div>
+        <h2 id="det-titulo">{{ p.nombre }}</h2>
+        <p>{{ nombreCategoria(p.categoria) }}@if (p.marca) { · {{ p.marca }} }</p>
+      </div>
+      <button class="cerrar" type="button" aria-label="Cerrar" (click)="cerrar()">×</button>
+    </div>
+
+    <div class="dlg-cuerpo">
+      @if (p.descripcion) { <p class="desc">{{ p.descripcion }}</p> }
+      @if (p.ingredienteActivo) {
+        <dl class="ficha"><dt>Ingrediente activo</dt><dd>{{ p.ingredienteActivo }}</dd></dl>
+      }
+
+      @if (p.presentaciones.length) {
+        <fieldset class="pres">
+          <legend>Elija la presentación</legend>
+          @for (s of p.presentaciones; track s.id) {
+            @let e = estadoStock(s);
+            <label [class.off]="s.stock <= 0">
+              <input type="radio" name="pres" [value]="s.id" [checked]="s.id === selId()"
+                     [disabled]="s.stock <= 0" (change)="selId.set(s.id)">
+              <span class="pn">{{ s.etiqueta }}
+                <small>{{ e === 'agotado' ? 'Agotada' : e === 'bajo' ? 'Pocas unidades' : 'Disponible' }}</small>
+              </span>
+              <span class="pp">{{ s.precio | dinero }}</span>
+            </label>
+          }
+        </fieldset>
+
+        <div class="pie-dlg">
+          <div class="cant">
+            <button type="button" aria-label="Disminuir" (click)="cant.set(cantEfectiva() - 1)">−</button>
+            <input type="number" min="1" inputmode="numeric" aria-label="Cantidad" [max]="max()"
+                   [disabled]="max() <= 0" [value]="cantEfectiva()"
+                   (change)="cambiarCantidad($any($event.target).value)">
+            <button type="button" aria-label="Aumentar" (click)="cant.set(cantEfectiva() + 1)">+</button>
+          </div>
+          <span class="subtotal">{{ subtotal() | dinero }}</span>
+          <button class="btn" type="button" [disabled]="max() <= 0" (click)="agregar()">Agregar al carrito</button>
+        </div>
+      } @else {
+        <p>Este producto aún no tiene presentaciones disponibles.</p>
+      }
+    </div>
+  }
+</dialog>

@@ -1,0 +1,69 @@
+<div class="chips" role="group" aria-label="Filtrar por estado">
+  @for (c of chips(); track c.id) {
+    <button class="chip" type="button" [attr.aria-pressed]="filtro() === c.id" (click)="filtro.set(c.id)">
+      {{ c.nombre }}<small>{{ c.n }}</small>
+    </button>
+  }
+</div>
+
+@for (p of visibles(); track p.id) {
+  <article class="pedido" [style.--est]="color(p)">
+    <div class="ped-cab">
+      <div>
+        <h2>Cotización {{ codigo(p) }}</h2>
+        <div class="fecha">{{ fecha(p) }}</div>
+      </div>
+      <select aria-label="Estado del pedido" #sel (change)="cambiarEstado(p, valor($event), sel)">
+        @for (e of estados; track e.id) {
+          <option [value]="e.id" [selected]="p.estado === e.id">{{ e.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="ped-cuerpo">
+      <div class="cliente">
+        <strong>{{ p.cliente.nombre || 'Sin nombre' }}</strong>
+        @if (p.cliente.telefono) { <a [href]="'tel:' + telLimpio(p)">{{ p.cliente.telefono }}</a> }
+        @if (whatsapp(p)) { <a [href]="whatsapp(p)" target="_blank" rel="noopener">Escribir por WhatsApp</a> }
+        @if (p.cliente.email) { <a [href]="'mailto:' + p.cliente.email">{{ p.cliente.email }}</a> }
+        @if (p.cliente.municipio) { <span>{{ p.cliente.municipio }}</span> }
+        @if (p.notas) { <div class="nota-cli"><strong>Notas del cliente: </strong>{{ p.notas }}</div> }
+      </div>
+
+      <div class="ped-items">
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th><th>Presentación</th><th class="num">Cant.</th>
+                <th class="num">P. unit.</th><th class="num">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (i of p.items; track $index) {
+                <tr>
+                  <td>{{ i.nombre }}</td>
+                  <td>{{ i.presentacion }}</td>
+                  <td class="num">{{ i.cantidad }}</td>
+                  <td class="num">{{ i.precioUnitario | dinero }}</td>
+                  <td class="num">{{ i.subtotal | dinero }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="ped-total">Total estimado {{ p.total | dinero }}</div>
+      </div>
+
+      <div class="campo interna">
+        <label [for]="'ni-' + p.id">Nota interna (el cliente no la ve)</label>
+        <textarea [id]="'ni-' + p.id" placeholder="Precio acordado, entrega, seguimiento…"
+                  [value]="p.notaInterna" (change)="guardarNota(p, valor($event))"></textarea>
+      </div>
+    </div>
+  </article>
+} @empty {
+  <div class="vacio">
+    {{ pedidos().length ? 'No hay pedidos con ese estado.' : 'Aún no han llegado cotizaciones. Aparecerán aquí en cuanto un cliente las envíe.' }}
+  </div>
+}

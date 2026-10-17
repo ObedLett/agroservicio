@@ -1,0 +1,103 @@
+@let alertasLista = alertas();
+@if (alertasLista.length) {
+  <div class="alerta-stock" role="alert">
+    <div>
+      <strong>{{ alertasLista.length }} {{ alertasLista.length === 1 ? 'presentación necesita' : 'presentaciones necesitan' }} reposición</strong>
+      <ul>
+        @for (a of alertasLista.slice(0, 5); track a.producto.id + a.presentacion.id) {
+          <li>{{ a.producto.nombre }} · {{ a.presentacion.etiqueta }}: {{ a.presentacion.stock }} en existencia, mínimo {{ a.presentacion.stockMinimo }}</li>
+        }
+        @if (alertasLista.length > 5) { <li>y {{ alertasLista.length - 5 }} más</li> }
+      </ul>
+    </div>
+    <button class="btn sec chico" type="button" (click)="soloBajo.set(!soloBajo())">
+      {{ soloBajo() ? 'Ver todo el inventario' : 'Ver solo estas' }}
+    </button>
+  </div>
+}
+
+<div class="barra-herr">
+  <div class="campo grande">
+    <label for="i-q">Buscar producto, marca o ingrediente</label>
+    <input id="i-q" type="search" autocomplete="off" [value]="texto()" (input)="texto.set(valor($event))">
+  </div>
+  <div class="campo">
+    <label for="i-cat">Categoría</label>
+    <select id="i-cat" (change)="categoria.set(valor($event))">
+      <option value="" [selected]="categoria() === ''">Todas</option>
+      @for (c of categorias(); track c) {
+        <option [value]="c" [selected]="c === categoria()">{{ nombreCategoria(c) }}</option>
+      }
+    </select>
+  </div>
+  <label class="check">
+    <input type="checkbox" [checked]="soloBajo()" (change)="soloBajo.set(marcado($event))"> Solo stock bajo o agotado
+  </label>
+  <span class="sep"></span>
+  <button class="btn" type="button" (click)="abrir(null)">Nuevo producto</button>
+</div>
+
+@if (!productos().length) {
+  <div class="vacio">
+    <div>Todavía no hay productos en el inventario.</div>
+    <div class="vacio-botones">
+      <button class="btn" type="button" (click)="abrir(null)">Crear el primer producto</button>
+      <button class="btn sec" type="button" (click)="cargarEjemplos()">Cargar productos de ejemplo</button>
+    </div>
+  </div>
+} @else {
+  @for (p of visibles(); track p.id) {
+    <article class="producto" [class.oculto]="!p.activo">
+      <div class="prod-cab">
+        <div>
+          <h2>{{ p.nombre }}@if (!p.activo) { <span class="etiqueta oculto">Oculto en catálogo</span> }</h2>
+          <div class="meta">{{ nombreCategoria(p.categoria) }}@if (p.marca) { · {{ p.marca }} }@if (p.ingredienteActivo) { · {{ p.ingredienteActivo }} }</div>
+        </div>
+        <div class="acciones">
+          <button class="btn sec chico" type="button" (click)="abrir(p)">Editar</button>
+          <button class="btn peligro chico" type="button" (click)="eliminar(p)">Eliminar</button>
+        </div>
+      </div>
+
+      @if (p.presentaciones.length) {
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Presentación</th><th>SKU</th><th class="num">Precio</th>
+                <th class="num">Existencia</th><th class="num">Mínimo</th><th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (s of p.presentaciones; track s.id) {
+                @let e = estadoStock(s);
+                <tr [class.bajo]="e === 'bajo'" [class.agotado]="e === 'agotado'">
+                  <td>{{ s.etiqueta }}</td>
+                  <td>{{ s.sku || '—' }}</td>
+                  <td class="num">{{ s.precio | dinero }}</td>
+                  <td class="num">
+                    <div class="ctl-stock">
+                      <button type="button" aria-label="Restar 1" (click)="ajustar(p, s, -1)">−</button>
+                      <input type="number" min="0" step="1" [value]="s.stock"
+                             [attr.aria-label]="'Existencia de ' + p.nombre + ' ' + s.etiqueta"
+                             (change)="fijar(p, s, valor($event))">
+                      <button type="button" aria-label="Sumar 1" (click)="ajustar(p, s, 1)">+</button>
+                    </div>
+                  </td>
+                  <td class="num">{{ s.stockMinimo }}</td>
+                  <td><span class="estado-stock" [class.ok]="e === 'ok'" [class.bajo]="e === 'bajo'" [class.agotado]="e === 'agotado'">{{ TXT_STOCK[e] }}</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="sin-pres">Sin presentaciones. Edite el producto para agregar una.</p>
+      }
+    </article>
+  } @empty {
+    <div class="vacio">Ningún producto coincide con los filtros.</div>
+  }
+}
+
+<app-editor-producto [sugerencias]="ingredientes()" />

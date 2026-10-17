@@ -1,0 +1,95 @@
+<header class="barra">
+  <a class="marca" routerLink="/">{{ negocio.nombre }}</a>
+  <div class="barra-der">
+    <a [href]="'tel:' + telefonoLimpio">Llámenos: {{ negocio.telefono }}</a>
+    <button class="btn-carrito" type="button" (click)="carrito.abierto.set(true)">
+      Carrito
+      @for (k of [carrito.ultimoAgregado()]; track k) {
+        <span class="cuenta" [class.anim]="k > 0">{{ carrito.cantidadTotal() }}</span>
+      }
+    </button>
+  </div>
+</header>
+
+<section class="portada">
+  <h1>¿Qué necesita su cultivo?</h1>
+  <p>Busque por producto, marca o ingrediente activo. Arme su carrito y solicite la cotización; le confirmamos precio y disponibilidad.</p>
+  <div class="buscador" role="search">
+    <label for="q" class="solo-lector">Buscar productos</label>
+    <input id="q" type="search" placeholder="Ej. glifosato, urea, cipermetrina, machete" autocomplete="off"
+           [value]="texto()" (input)="texto.set(valor($event))">
+  </div>
+</section>
+
+<div class="cuerpo">
+  <aside class="filtros" aria-label="Filtros">
+    <div>
+      <h2>Categoría</h2>
+      <div class="cats">
+        @for (c of categoriasLista(); track c.id) {
+          <button class="cat" type="button" [attr.aria-pressed]="categoria() === c.id" (click)="categoria.set(c.id)">
+            <span>{{ c.nombre }}</span><small>{{ c.n }}</small>
+          </button>
+        }
+      </div>
+    </div>
+    <div>
+      <h2><label for="f-ing">Ingrediente activo</label></h2>
+      <select id="f-ing" (change)="ingrediente.set(valor($event))">
+        <option value="" [selected]="ingrediente() === ''">Todos</option>
+        @for (i of ingredientes(); track i) {
+          <option [value]="i" [selected]="i === ingrediente()">{{ i }}</option>
+        }
+      </select>
+    </div>
+    <label class="check">
+      <input type="checkbox" [checked]="soloDisponibles()" (change)="soloDisponibles.set(marcado($event))"> Solo con existencias
+    </label>
+    <button class="btn-limpiar" type="button" (click)="limpiar()">Limpiar filtros</button>
+  </aside>
+
+  <main>
+    <div class="info" aria-live="polite">
+      @if (cargando()) { Cargando catálogo… }
+      @else if (!error()) { {{ filtrados().length }} {{ filtrados().length === 1 ? 'producto' : 'productos' }} }
+    </div>
+
+    <div class="grilla">
+      @if (error()) {
+        <div class="vacio ancho-total">No pudimos cargar el catálogo. Revise su conexión y recargue la página.</div>
+      } @else if (!cargando()) {
+        @for (p of filtrados(); track p.id) {
+          @let e = estadoTarjeta(p);
+          <button class="tarjeta" type="button" [class.sin-stock]="stockTotal(p) <= 0"
+                  [attr.aria-label]="'Ver detalle de ' + p.nombre" (click)="seleccionado.set(p)">
+            <span class="tile" [style.--tile]="colorCategoria(p.categoria)">
+              @if (p.imagenUrl) {
+                <img [src]="p.imagenUrl" alt="" loading="lazy">
+              } @else {
+                {{ inicial(p) }}
+              }
+              <span class="estado" [class.agotado]="e.clase === 'agotado'" [class.pocas]="e.clase === 'pocas'">{{ e.texto }}</span>
+            </span>
+            <span class="cuerpo-t">
+              <span class="cat-t">{{ nombreCategoria(p.categoria) }}@if (p.marca) { · {{ p.marca }} }</span>
+              <span class="nombre">{{ p.nombre }}</span>
+              @if (p.ingredienteActivo) { <span class="activo">{{ p.ingredienteActivo }}</span> }
+              @if (p.presentaciones.length) {
+                <span class="precio">{{ p.presentaciones.length > 1 ? 'Desde ' : '' }}{{ precioDesde(p) | dinero }}</span>
+              }
+            </span>
+          </button>
+        } @empty {
+          <div class="vacio ancho-total">
+            {{ productos().length ? 'No hay productos con esos filtros. Pruebe con otra palabra o limpie los filtros.' : 'Aún no hay productos publicados.' }}
+          </div>
+        }
+      }
+    </div>
+  </main>
+</div>
+
+<footer>{{ negocio.nombre }} · Los precios y existencias son referenciales hasta que confirmemos su cotización.</footer>
+
+<app-detalle-producto [producto]="seleccionado()" (cerrado)="seleccionado.set(null)" />
+<app-carrito />

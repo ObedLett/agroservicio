@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales: paleta, tipografía y piezas que comparten el catálogo y el panel. */
+:root{
+  --papel:#F1F4EA; --hoja:#FFFFFF; --tinta:#1B2A1E; --tinta-2:#4B5A4E;
+  --verde:#2D6A3E; --verde-osc:#1E4A2B; --maiz:#E6B422; --alerta:#B3261E;
+  --alerta-fondo:#FBEAE8; --aviso-fondo:#FFF4D1; --borde:#C9D2BD; --radio:6px;
+  --titulo:"Bricolage Grotesque",system-ui,sans-serif;
+  --texto:"Public Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--papel);color:var(--tinta);font:400 1rem/1.5 var(--texto)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--verde);outline-offset:2px}
+.solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+
+/* Botones */
+.btn{border:0;border-radius:var(--radio);padding:.7rem 1.1rem;font-weight:600;background:var(--verde);color:#fff}
+.btn:hover{background:var(--verde-osc)}
+.btn:disabled{background:#9AA79C;cursor:not-allowed}
+.btn.sec{background:transparent;color:var(--verde);border:1px solid var(--verde)}
+.btn.sec:hover{background:#E4EADA}
+.btn.ancho{width:100%}
+.btn.peligro{background:transparent;color:var(--alerta);border:1px solid var(--alerta)}
+.btn.peligro:hover{background:var(--alerta-fondo)}
+.btn.chico{padding:.35rem .65rem;font-size:.88rem}
+.cerrar{background:none;border:1px solid var(--borde);border-radius:var(--radio);width:2.4rem;height:2.4rem;font-size:1.2rem;line-height:1}
+
+/* Campos de formulario */
+.campo{display:grid;gap:.3rem}
+.campo label{font-weight:600;font-size:.92rem}
+.campo input,.campo select,.campo textarea{border:1px solid #9AA79C;border-radius:var(--radio);padding:.65rem .75rem;background:#fff;width:100%}
+.campo textarea{min-height:4.5rem;resize:vertical}
+.error{color:var(--alerta);font-size:.92rem;margin:0}
+
+/* Selector de cantidad */
+.cant{display:inline-flex;border:1px solid var(--borde);border-radius:var(--radio);overflow:hidden}
+.cant button{background:#EEF2E6;border:0;width:2.4rem}
+.cant input{width:3.2rem;text-align:center;border:0;border-inline:1px solid var(--borde);-moz-appearance:textfield}
+.cant input::-webkit-outer-spin-button,.cant input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+/* Estado vacío y ventanas */
+.vacio{padding:2.5rem 1rem;text-align:center;color:var(--tinta-2);background:#fff;border:1px dashed var(--borde);border-radius:var(--radio)}
+dialog{border:0;border-radius:var(--radio);padding:0;background:var(--hoja);color:var(--tinta)}
+dialog::backdrop{background:rgba(20,34,23,.6)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}

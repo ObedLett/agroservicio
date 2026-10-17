@@ -1,0 +1,19 @@
+.velo{position:fixed;inset:0;background:rgba(20,34,23,.55);z-index:20}
+.cajon{position:fixed;top:0;right:0;bottom:0;width:min(28rem,100vw);background:var(--hoja);z-index:30;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;box-shadow:-8px 0 30px rgba(0,0,0,.2)}
+.cajon.abierto{transform:none}
+.cajon-cab{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--borde)}
+.cajon-cab h2{font:800 1.4rem var(--titulo);margin:0}
+.cajon-cuerpo{overflow:auto;padding:1rem 1.25rem 2rem;display:grid;gap:1.25rem;align-content:start}
+.linea{display:grid;grid-template-columns:1fr auto;gap:.2rem .75rem;padding-bottom:.9rem;border-bottom:1px solid var(--borde)}
+.linea .ln{font-weight:600}
+.linea .lp{color:var(--tinta-2);font-size:.9rem}
+.linea .lt{font-weight:600;text-align:right}
+.linea .acciones{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-top:.4rem}
+.quitar{background:none;border:0;color:var(--alerta);text-decoration:underline;padding:0}
+.total{display:flex;justify-content:space-between;align-items:baseline;font:800 1.4rem var(--titulo)}
+.nota{font-size:.88rem;color:var(--tinta-2);margin:0}
+.form{display:grid;gap:.85rem}
+.exito{display:grid;gap:.75rem;background:#EAF2E6;border:1px solid var(--verde);border-radius:var(--radio);padding:1.25rem}
+.exito h3{font:800 1.3rem var(--titulo);margin:0}
+.codigo{font:800 1.8rem var(--titulo);letter-spacing:.05em}
+@media (prefers-reduced-motion:reduce){.cajon{transition:none}}
